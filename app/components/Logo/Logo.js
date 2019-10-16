@@ -11,6 +11,8 @@ import {
 
 import styles from './styles';
 
+// Logo attribution https://www.flaticon.com/authors/vitaly-gorbachev
+
 const ANIMATION_DURATION = 250;
 
 class Logo extends Component {
