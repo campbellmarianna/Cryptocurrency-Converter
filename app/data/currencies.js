@@ -1,6 +1,6 @@
 export default [
-  'AUD',
-  'BGN',
+  'BIT',
+  'BCH',
   'BRL',
   'CAD',
   'CHF',
@@ -32,3 +32,4 @@ export default [
   'USD',
   'ZAR',
 ];
+

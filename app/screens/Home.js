@@ -1,48 +1,71 @@
 import React, { Component} from 'react';
+import PropTypes from 'prop-types';
 import { KeyboardAvoidingView,StatusBar } from 'react-native';
+import { connect } from 'react-redux';
 
 import { Container } from '../components/Container';
 import { Logo } from '../components/Logo';
 import { InputWithButton } from '../components/TextInput';
 
-const TEMP_BASE_CURRENCY = 'USD';
-const TEMP_QUOTE_CURRENCY = 'GBP';
-const TEMP_BASE_PRICE = '100';
-const TEMP_QUOTE_PRICE = '79.74';
-
+import { changeCurrencyAmount } from '../actions/currencies';
 
 class Home extends Component {
+  static propTypes = {
+    navigation: PropTypes.object,
+    dispatch: PropTypes.func,
+    baseCurrency: PropTypes.string,
+    quoteCurrency: PropTypes.string,
+    amount: PropTypes.number,
+    isFetching: PropTypes.bool,
+    conversionRate: PropTypes.number,
+  };
+
   handlePressBaseCurrency = () => {
-    console.log('press base currency');
+    const { navigation } = this.props;
+    navigation.navigate('CurrencyList', { title: 'Base Currency', type: 'base' });
   };
 
   handlePressQuoteCurrency = () => {
-    console.log('press quote currency');
+    const { navigation } = this.props;
+    navigation.navigate('CurrencyList', { title: 'Quote Currency' });
   };
 
   handleTextChange = (text) => {
-    console.log('change text', text);
+    const { dispatch } = this.props;
+    dispatch(changeCurrencyAmount(amount));
   };
 
   render() {
+    const {
+      baseCurrency,
+      quoteCurrency,
+      amount,
+      conversionRate,
+      isFetching,
+    } = this.props;
+
+    let quotePrice = '...';
+    if (!isFetching) {
+      quotePrice = (amount * conversionRate).toFixed(2);
+    }
+
     return (
       <Container>
         <StatusBar translucent={false} barStyle="light-content" />
         <KeyboardAvoidingView behavior="padding">
           <Logo />
           <InputWithButton
-            buttonText={TEMP_BASE_CURRENCY}
+            buttonText={baseCurrency}
             onPress={this.handlePressBaseCurrency}
-            defaultValue={TEMP_BASE_PRICE}
+            defaultValue={amount.toString()}
             keyboardType="numeric"
             onChangeText={this.handleTextChange}
-
           />
           <InputWithButton
-            buttonText={TEMP_QUOTE_CURRENCY}
-            onPress={this.handlePressQuoteCurrency}
             editable={false}
-            value={TEMP_QUOTE_PRICE}
+            buttonText={quoteCurrency}
+            onPress={this.handlePressQuoteCurrency}
+            value={quotePrice}
           />
         </KeyboardAvoidingView>
       </Container>
@@ -50,4 +73,18 @@ class Home extends Component {
   }
 }
 
-export default Home;
+
+const mapStateToProps = (state) => {
+  const { baseCurrency, quoteCurrency, amount } = state.currencies;
+  const conversionSelector = state.currencies.conversions[baseCurrency] || {};
+  const rates = conversionSelector.rates || {};
+
+  return {
+    baseCurrency,
+    quoteCurrency,
+    amount,
+    conversionRate: rates[quoteCurrency] || 0,
+    isFetching: conversionSelector.isFetching,
+  };
+};
+export default connect(mapStateToProps)(Home);

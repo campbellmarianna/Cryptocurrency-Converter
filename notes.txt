@@ -1,0 +1,19 @@
+## Data Design
+rates - once we have USD the rate for GBP
+{
+  currencies: {
+    baseCurrency: <String>,
+    quoteCurrency: <String>,
+    amount: <Number>,
+    conversions: {
+      [CURRENCY_STRING]: {
+        isFetching: <Boolean>,
+        base: String, // from api
+        rates: { // from api
+          [CURRENCY_STRING]: Number,
+          ...
+        }
+      }
+    }
+  },
+}
