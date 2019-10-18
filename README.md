@@ -16,7 +16,10 @@ git clone https://github.com/campbellmarianna/Cryptocurrency-Converter.git
 cd Cryptocurrency-Converter
 npm install
 ```
-
+## Project Built With
+- React Native
+- Redux
+ 
 ## Project Goals
 - [x] Show a screen with a logo and text fields
 - [x] Enable a user to select a cryptocurrency
